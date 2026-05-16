@@ -71,11 +71,11 @@ while game:
 
         if ball.rect.x < 0:
             finish = True
-            window.blit(lose1, (200, 200))
+            window.blit(lose1, (100, 200))
 
         if ball.rect.x > 700:
             finish = True
-            window.blit(lose2, (200, 200))
+            window.blit(lose2, (100, 200))
         raket1.reset()
         raket1.update_l()
         raket2.reset()
