@@ -2,9 +2,11 @@ from pygame import *
 import pygame.sprite
 font.init()
 font1 = font.SysFont('Arial', 80)
-lose = font1.render("YOU LOSE", True, (247, 5, 5))
+lose1 = font1.render("PLAYER 1 LOSE", True, (247, 5, 5))
+lose2 = font1.render("PLAYER 2 LOSE", True, (247, 5, 5))
 img_rocket = 'png-klev-club-p-raketka-png-1.png'
 img_back = 'download.png'
+img_ball = 'images.jpg'
 win_width = 700
 win_height = 500
 window = display.set_mode((win_width, win_height))
@@ -32,21 +34,51 @@ class Player(GameSprite):
     def update_l(self):
         keys = key.get_pressed()
         if keys[K_UP] and self.rect.y > 5:
-            self.rect.x -= self.speed
-        if keys[K_DOWN] and self.rect.y < win_width - 80:
-            self.rect.x += self.speed
+            self.rect.y -= self.speed
+        if keys[K_DOWN] and self.rect.y < win_height - 80:
+            self.rect.y += self.speed
+    def update_r(self):
+        keys = key.get_pressed()
+        if keys[K_w] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if keys[K_s] and self.rect.y < win_height - 80:
+            self.rect.y += self.speed
+
 raket1 = Player(img_rocket, 5, 100, 80, 100, 5)
+raket2 = Player(img_rocket, 600, 100, 80, 100, 5)
+ball = GameSprite(img_ball, 100, 100, 20, 20, 5)
 clock = time.Clock()
 
 finish = False
-run = True
-while run:
+game = True
+speed_x = 3
+speed_y = 3
+while game:
     for e in event.get():
         if e.type == QUIT:
-            run = False
+            game = False
     if not finish: 
         window.blit(background, (0,0))
+        ball.reset()
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+    
+        if ball.rect.y > win_height-50 or ball.rect.y < 0:
+            speed_y *= -1
+
+        if sprite.collide_rect(raket1, ball) or sprite.collide_rect(raket2, ball):
+            speed_x *= -1
+
+        if ball.rect.x < 0:
+            finish = True
+            window.blit(lose1, (200, 200))
+
+        if ball.rect.x > 700:
+            finish = True
+            window.blit(lose2, (200, 200))
         raket1.reset()
         raket1.update_l()
+        raket2.reset()
+        raket2.update_r()
         display.update()
         clock.tick(20) 
